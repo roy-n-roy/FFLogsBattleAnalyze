@@ -19,9 +19,13 @@ config.read('settings.ini', encoding='utf-8')
 
 # ソート用ジョブ名配列
 JOB_SORT_RANK = [
-    'DarkKnight', 'Warrior', 'Gunbreaker', 'Paladin', 'WhiteMage',
-    'Astrologian', 'Scholar', 'Samurai', 'Monk', 'Dragoon', 'Ninja', 'Bard',
-    'Machinist', 'Dancer', 'BlackMage', 'Summoner', 'RedMage', 'Total']
+    'DarkKnight', 'Warrior', 'Gunbreaker', 'Paladin',
+    'WhiteMage', 'Astrologian', 'Scholar',
+    'Samurai', 'Monk', 'Dragoon', 'Ninja',
+    'Bard', 'Machinist', 'Dancer',
+    'BlackMage', 'Summoner', 'RedMage',
+    'Total'
+]
 
 FFLOGS_TARGET_ZONE_ID = 887   # The Epic of Alexander
 FFLOGS_TARGET_BOSS_ID = 1050  # The Epic of Alexander
@@ -118,8 +122,8 @@ def get_analysys_result2(api_key: str, report_id: str) -> str:
                         FFLOGS_DPS_URL.format(
                             report_id=report_id,
                             boss_id=FFLOGS_TARGET_BOSS_ID
-                        ) +
-                        FFLOGS_URL_DAMAGE_DONE_AND_PHASE_QUERY.format(
+                        )
+                        + FFLOGS_URL_DAMAGE_DONE_AND_PHASE_QUERY.format(
                             phase_num=p
                         )
                     )
@@ -138,10 +142,12 @@ def get_analysys_result2(api_key: str, report_id: str) -> str:
                             retry_cnt += 1
                             if (retry_cnt >= 5):
                                 raise
-                    time.sleep(0.3)
+					time.sleep(0.3)
 
-                    html_table = BeautifulSoup(driver.page_source.encode(
-                        'utf-8'), 'html.parser').find('table', id='main-table-0')
+                    html_table = BeautifulSoup(
+                        driver.page_source.encode('utf-8'),
+                        'html.parser'
+                    ).find('table', id='main-table-0')
 
                     if html_table is None:
                         continue
@@ -149,8 +155,11 @@ def get_analysys_result2(api_key: str, report_id: str) -> str:
                     for row in html_table.find('tbody').find_all('tr'):
                         name_cell = row.find(
                             'td', {'class': 'report-table-name'})
-                        dps_cell = row.find(
-                            'td', {'class': 'primary', 'class': 'main-per-second-amount'})
+                        dps_cell = (
+                            row
+                            .find('td', {'class': 'primary'})
+                            .find('td', {'class': 'main-per-second-amount'})
+                        )
 
                         if name_cell is None or dps_cell is None:
                             continue
@@ -166,14 +175,13 @@ def get_analysys_result2(api_key: str, report_id: str) -> str:
                             .find('tfoot')
                             .find('tr')
                             .find_all('td')[3]
-                            .get_text())
-                        dps_table['Total'].dps[p - 1] = (
-                            float(
-                                total_dps_text
-                                .replace('\n', '')
-                                .replace('\t', '')
-                                .replace(',', '')
-                            )
+                            .get_text()
+                        )
+                        dps_table['Total'].dps[p - 1] = float(
+                            total_dps_text
+                            .replace('\n', '')
+                            .replace('\t', '')
+                            .replace(',', '')
                         )
 
                 # 各フェーズ・戦闘単位の戦闘時間取得
