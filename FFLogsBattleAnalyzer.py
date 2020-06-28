@@ -6,10 +6,11 @@ import requests
 import tqdm
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriverdownloader import GeckoDriverDownloader
+from webdriverdownloader import ChromeDriverDownloader
 
 config = configparser.ConfigParser()
 config.read('settings.ini', encoding='utf-8')
@@ -26,7 +27,7 @@ FFLOGS_URL_FIGHT_QUERY = '&fight={fight_id}'
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 bin_dir = os.sep.join([base_dir, 'bin'])
-GeckoDriverDownloader(download_root=base_dir, link_path=bin_dir) \
+ChromeDriverDownloader(download_root=base_dir, link_path=bin_dir) \
     .download_and_install()
 os.environ['PATH'] = os.pathsep.join([bin_dir, os.environ.get('PATH', '')])
 
@@ -80,12 +81,14 @@ def get_analysys_result(api_key: str, report_id: str) -> str:
         if in_target_fight and friendly['type'] in JOB_SORT_RANK:
             dps_table[friendly['name']] = Actor(friendly['name'], friendly['type'], len(phases))
 
+    options = ChromeOptions()
+    options.add_argument('--no-sandbox')
 
     # プログレスバー初期化
     with tqdm.tqdm(total=len(phases) * len(fights_data['fights'])) as pbar:
 
         # Selenium Firefox Driver
-        with webdriver.Firefox() as driver:
+        with webdriver.Chrome(options=options) as driver:
             # フェーズ単位処理
             for p in range(1, len(phases) + 1):
                 # 各フェーズのDPS値取得
