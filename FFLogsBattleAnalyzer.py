@@ -1,6 +1,5 @@
 import configparser
 import os
-import time
 from statistics import mean
 
 import requests
@@ -18,8 +17,8 @@ config.read('settings.ini', encoding='utf-8')
 # ソート用ジョブ名配列
 JOB_SORT_RANK = ['DarkKnight', 'Warrior', 'Gunbreaker', 'Paladin', 'WhiteMage', 'Astrologian', 'Scholar', 'Samurai', 'Monk', 'Dragoon', 'Ninja', 'Bard', 'Machinist', 'Dancer', 'BlackMage', 'Summoner', 'RedMage', 'Total']
 
-FFLOGS_TARGET_ZONE_ID = 887  # The Epic of Alexander
-FFLOGS_TARGET_BOSS_ID = 1050 # The Epic of Alexander
+FFLOGS_TARGET_ZONE_ID = 887   # The Epic of Alexander
+FFLOGS_TARGET_BOSS_ID = 1050  # The Epic of Alexander
 FFLOGS_API_FIGHT_URL = 'https://www.fflogs.com/v1/report/fights/{report_id}?api_key={api_key}'
 FFLOGS_DPS_URL = 'https://www.fflogs.com/reports/{report_id}/#boss={boss_id}&difficulty=100'
 FFLOGS_URL_DAMAGE_DONE_AND_PHASE_QUERY = '&type=damage-done&phase={phase_num}'
